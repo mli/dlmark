@@ -1,1 +1,1 @@
-# dlmark
+# An Open Deep Learning Benchmark
