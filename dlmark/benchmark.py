@@ -1,21 +1,17 @@
 # Inspired from https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/platform/benchmark.py
+import inspect
+import json
 
-class Benchmark(object):
-      """Abstract class that provides helper functions for running benchmarks.
+def report_benchmark(**kwargs):
+      stack = inspect.stack()
+      assert len(stack) > 1, stack
+      assert len(stack[1]) > 3, stack[1]
+      fname, func = stack[1][1], stack[1][3]
+      kwargs += {'filename':fname, 'function':func}
 
-      """
+      report_fname = fname.replace('/', '-')+':'+func+'.json'
+      json.dump(kwargs)
+      print('Results are written into '+report_fname)
 
-      def report_benchmark(self, iters=None, cpu_time=None, wall_time=None,
-                           throughput=None, extras=None, name=None):
-         print(cpu_time)
-
-
-
-import unittest
-
-class ResNet(unittest.TestCase):
-    def test_hehe(self):
-        print(1)
-
-    def test_haha(self):
-        print(2)
+      print(report_fname)
+      print(json.dumpgs))

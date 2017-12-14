@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# set -x
+
+ENV=$1
+echo ${ENV}
+shift
+MODULE=$1
+shift
+ARGS=$@
+
+# set up environment
+
+if [[ "${ENV}" == *.yml ]]; then
+    FILE="${ENV}.yml"
+    NAME="$(grep name ${ENV} | awk '{print $2}')"
+    # conda env create -f ${ENV}
+    source activate ${NAME}
+fi
+
+ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+python setup.py develop --user
+
+python ${MODULE}

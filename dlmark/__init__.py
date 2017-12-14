@@ -1,4 +1,4 @@
 
 #!/usr/bin/env python
 
-from . import benchmark
+from .benchmark import report_benchmark
