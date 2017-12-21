@@ -1,0 +1,16 @@
+name: dlmark_build
+dependencies:
+- python
+- jupyter
+- numpy
+- sphinx
+- sphinx_rtd_theme
+- matplotlib
+- pandas
+- bokeh
+- notebook=5.0.0
+- pip:
+  - pyopenssl>=17.3.0
+  - nbsphinx>=0.2.18
+  - recommonmark
+  - https://github.com/mli/notedown/tarball/master
