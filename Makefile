@@ -5,7 +5,7 @@ build/%.ipynb: %.md $$(wildcard %_*.json)
 	@echo $^
 	@mkdir -p $(@D)
 	@cp $^ $(@D)
-	cd $(@D); rm ../../build/$@.md; python ../md2ipynb.py ../../$< ../../$@
+	cd $(@D); rm ../../build/$<; python ../md2ipynb.py ../../$< ../../$@
 
 build/%: %
 	@mkdir -p $(@D)

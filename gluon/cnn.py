@@ -103,7 +103,7 @@ def benchmark_accuracy():
         with open('cnn_'+device_name+'_accuracy.json', 'w') as f:
             json.dump(results, f)
 
-benchmark_accuracy()
+# benchmark_accuracy()
 
 def get_throughput(model_name, batch_size):
     ctx = mx.gpu(0)
@@ -140,7 +140,8 @@ def benchmark_throughput():
     device_name = dm.utils.nv_gpu_name(0).replace(' ', '-').lower()
     for model_name in modelzoo:
         print(model_name)
-        batch_sizes = [1,2,4,8,16,32,64]
+        # batch_sizes = [1,2,4,8,16,32,64]
+        batch_sizes = [1024, 10000]
         if not 'VGG' in model_name:
             batch_sizes += [128,]
         for batch_size in batch_sizes:
@@ -152,4 +153,4 @@ def benchmark_throughput():
         with open('cnn_'+device_name+'_throughput.json', 'w') as f:
             json.dump(results, f)
 
-# benchmark_throughput()
+benchmark_throughput()

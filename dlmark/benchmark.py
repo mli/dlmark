@@ -19,8 +19,11 @@ from multiprocessing import Process, Queue
 
 def run_with_separate_process(func, *args):
     def _process(queue, func, *args):
-          res = func(*args)
-          queue.put(res)
+        try:
+            res = func(*args)
+            queue.put(res)
+        except Exception as e:
+            queue.put(None)
     q = Queue()
     p = Process(target=_process, args=(q, func, *args))
     p.start()
