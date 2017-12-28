@@ -1,0 +1,5 @@
+name: mxnet-v1-cu90
+dependencies:
+- python
+- pip:
+  - mxnet-cu90==1.0

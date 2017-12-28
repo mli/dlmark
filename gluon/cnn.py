@@ -136,24 +136,19 @@ def get_throughput(model_name, batch_size):
     }
 
 def benchmark_throughput():
-    results = []
-    device_name = dm.utils.nv_gpu_name(0).replace(' ', '-').lower()
+    save = dm.benchmark.SaveResults(postfix=dm.utils.nv_gpu_name(0))
     for model_name in modelzoo:
         print(model_name)
-        # batch_sizes = [1,2,4,8,16,32,64]
-        batch_sizes = [1024, 10000]
-        if not 'VGG' in model_name:
-            batch_sizes += [128,]
+        batch_sizes = [1,2,4,8,16,32,64,128,256]
         for batch_size in batch_sizes:
-            res, _ = dm.benchmark.run_with_separate_process(
+            res, exitcode = dm.benchmark.run_with_separate_process(
                 get_throughput, model_name, batch_size
             )
-            results.append(res)
+            if exitcode:
+                break
+            save.add(res)
 
-        with open('cnn_'+device_name+'_throughput.json', 'w') as f:
-            json.dump(results, f)
-
-# benchmark_throughput()
+benchmark_throughput()
 
 def _try_batch_size(net, batch_size, data_shape, ctx):
     print('Try batch size', batch_size)
@@ -185,7 +180,7 @@ def find_largest_batch_size(net, data_shape):
 
     return lower
 
-def benchmark_largest_batch_size():
+def benchmark_max_batch_size():
     save = dm.benchmark.SaveResults()
     device_name = dm.utils.nv_gpu_name(0)
     for model_name in modelzoo:
@@ -194,8 +189,8 @@ def benchmark_largest_batch_size():
         save.add({
             'device':device_name,
             'model':model_name,
-            'batch_size':find_largest_batch_size(net, (3,224,224)),
+            'batch_size':find_max_batch_size(net, (3,224,224)),
             'workload':'Inference',
         })
 
-benchmark_largest_batch_size()
+# benchmark_max_batch_size()

@@ -13,7 +13,7 @@ ARGS=$@
 if [[ "${ENV}" == *.yml ]]; then
     FILE="${ENV}.yml"
     NAME="$(grep name ${ENV} | awk '{print $2}')"
-    # conda env create -f ${ENV}
+    conda env update -f ${ENV}
     source activate ${NAME}
 fi
 
