@@ -6,7 +6,7 @@ set -e
 sudo apt-get update 
 sudo apt-get install -y build-essential libgfortran3
 
-https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda_9.0.176_384.81_linux-run
+wget https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda_9.0.176_384.81_linux-run
 sudo sh cuda_9.0.176_384.81_linux-run --silent --driver --toolkit
 rm cuda_9.0.176_384.81_linux-run
 
