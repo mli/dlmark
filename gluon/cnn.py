@@ -96,7 +96,7 @@ def benchmark_accuracy():
     results = []
     for model_name in modelzoo:
         print(model_name)
-        res = dm.benchmark.run_with_separate_process(
+        res, _ = dm.benchmark.run_with_separate_process(
             get_accuracy, model_name
         )
         results.append(res)
@@ -145,7 +145,7 @@ def benchmark_throughput():
         if not 'VGG' in model_name:
             batch_sizes += [128,]
         for batch_size in batch_sizes:
-            res = dm.benchmark.run_with_separate_process(
+            res, _ = dm.benchmark.run_with_separate_process(
                 get_throughput, model_name, batch_size
             )
             results.append(res)
@@ -153,4 +153,49 @@ def benchmark_throughput():
         with open('cnn_'+device_name+'_throughput.json', 'w') as f:
             json.dump(results, f)
 
-benchmark_throughput()
+# benchmark_throughput()
+
+def _try_batch_size(net, batch_size, data_shape, ctx):
+    print('Try batch size', batch_size)
+    def _run():
+        net.collect_params().reset_ctx(ctx)
+        X = nd.random.uniform(shape=(batch_size, *data_shape), ctx=ctx)
+        y = net(X)
+        nd.waitall()
+
+    _, exitcode = dm.benchmark.run_with_separate_process(_run)
+    return exitcode == 0
+
+def find_largest_batch_size(net, data_shape):
+    upper = 1024
+    lower = 1
+    ctx = mx.gpu(0)
+    while True:
+        if _try_batch_size(net, upper, data_shape, ctx):
+            upper *= 2
+        else:
+            break
+
+    while (upper - lower) > 1:
+        cur = (upper + lower) // 2
+        if _try_batch_size(net, cur, data_shape, ctx):
+            lower = cur
+        else:
+            upper = cur
+
+    return lower
+
+def benchmark_largest_batch_size():
+    save = dm.benchmark.SaveResults()
+    device_name = dm.utils.nv_gpu_name(0)
+    for model_name in modelzoo:
+        print(model_name)
+        net = modelzoo[model_name](pretrained=True)
+        save.add({
+            'device':device_name,
+            'model':model_name,
+            'batch_size':find_largest_batch_size(net, (3,224,224)),
+            'workload':'Inference',
+        })
+
+benchmark_largest_batch_size()

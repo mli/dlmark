@@ -1,7 +1,7 @@
 all: html
 
 .SECONDEXPANSION:
-build/%.ipynb: %.md $$(wildcard %_*.json)
+build/%.ipynb: %.md $$(wildcard %*.json)
 	@echo $^
 	@mkdir -p $(@D)
 	@cp $^ $(@D)

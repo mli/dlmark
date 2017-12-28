@@ -102,3 +102,27 @@ def throughput_vs_accuracy(data):
     # p.xaxis[0].formatter = LogTickFormatter()
 
     return p
+
+def max_batch_size(data):
+    models = data['model'].values
+    batchs = data['batch_size'].values
+    source = ColumnDataSource(data=data)
+    title = "Maximal batch size"
+    if 'device' in data.columns:
+        dev = data.device.unique()
+        assert len(dev) == 1, dev
+        title += " @ " + dev[0]
+    p = figure(x_range=models, plot_height=250, toolbar_location=None, title=title)
+    p.vbar(x='model', top='batch_size', width=0.9, source=source,
+        line_color='white')
+
+    tooltips = [("Model", "@model"),
+                 ("Max batch size", "@batch_size")]
+    p.add_tools(HoverTool(tooltips=tooltips))
+    p.xgrid.grid_line_color = None
+    p.y_range.start = 0
+    p.background_fill_alpha = 0
+    p.border_fill_alpha = 0
+    p.xaxis.major_label_orientation = .5
+
+    return p

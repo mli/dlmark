@@ -24,22 +24,27 @@ devices = thr.device.unique()
 (models, devices)
 ```
 
-Now we visualize the throughput for each network when increasing the batch sizes. We only use the results on the first device and show the first network:
+Now we visualize the throughput for each network when increasing the batch sizes. We only use the results on the first device and show a quater of networks:
 
 ```{.python .input  n=2}
 data = thr[thr.device==devices[0]]
-show(dm.plot.batch_size_vs_throughput_grid(data, models[:1]))
+show(dm.plot.batch_size_vs_throughput_grid(data, models[::4]))
 ```
 
-The throughput increases with the batch size in log scale. The device memory, as exepcted, also increases linearly with the batch size. But note that, due to the pooled memory mechanism in MXNet, the measured device memory usage 
+The throughput increases with the batch size in log scale. The device memory, as exepcted, also increases linearly with the batch size. But note that, due to the pooled memory mechanism in MXNet, the measured device memory usage might be different to the actual memory usdage.
 
-similiar for the device memory usage.
+One way to measure the actual device memory usage is finding the largest batch size we can run. 
 
-```{.python .input  n=3}
-show(dm.plot.batch_size_vs_throughput_grid(data, models[1:]))
+```{.python .input}
+with open('cnn.py__benchmark_largest_batch_size.json') as f:
+    bs = pd.DataFrame(json.load(f))
+    
+show(dm.plot.max_batch_size(bs))
 ```
 
 ### Prediction accuracy versus throughput
+
+We measture the prediction accuracy of each model using the ILSVRC 2012 validation dataset. Then plot the results together with the throughput with fixed batch size 64. We colorize models from the same family with the same color. 
 
 ```{.python .input  n=4}
 !cat cnn*accuracy.json >acc.json
@@ -51,9 +56,6 @@ data = thr[(thr.model.isin(acc.model)) &
 data = data.set_index('model').join(acc[['model','accuracy']].set_index('model'))
 data['model_prefix'] = [i[:i.rfind('-')] if i.rfind('-') > 0 else i for i in data.index]
 
-```
-
-```{.python .input  n=5}
 p = dm.plot.throughput_vs_accuracy(data)
 show(p)
 ```
