@@ -23,28 +23,6 @@ def _preprocess(X):
 # 'VGG-16-BN':models.vgg16_bn,
 # 'VGG-19-BN':models.vgg19_bn
 
-# modelzoo = {
-#     ('AlexNet', ''):models.alexnet,
-#     ('DensetNet','121'):models.densenet121,
-#     ('DensetNet','161'):models.densenet161,
-#     ('DensetNet','169'):models.densenet169,
-#     ('DensetNet','201'):models.densenet201,
-#     ('ResNet-v1','101'):models.resnet101_v1,
-#     ('ResNet-v1','152'):models.resnet152_v1,
-#     ('ResNet-v1','18'):models.resnet18_v1,
-#     ('ResNet-v1','34'):models.resnet34_v1,
-#     ('ResNet-v1','50'):models.resnet50_v1,
-#     ('ResNet-v2','18'):models.resnet18_v2,
-#     ('ResNet-v2','34'):models.resnet34_v2,
-#     ('ResNet-v2','50'):models.resnet50_v2,
-#     ('SqueezeNet','1.0'):models.squeezenet1_0,
-#     ('SqueezeNet','1.1'):models.squeezenet1_1,
-#     ('VGG','11'):models.vgg11,
-#     ('VGG','13'):models.vgg13,
-#     ('VGG','16'):models.vgg16,
-#     ('VGG','19'):models.vgg19,
-# }
-
 modelzoo = {
     'AlexNet':models.alexnet,
     'DensetNet-121':models.densenet121,
