@@ -1,7 +1,7 @@
 import numpy as np
 from bokeh import palettes
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, HoverTool
+from bokeh.models import ColumnDataSource, HoverTool, FactorRange
 from bokeh.layouts import gridplot
 from bokeh.transform import factor_cmap
 from bokeh.models import LogTickFormatter
@@ -125,4 +125,29 @@ def max_batch_size(data):
     p.border_fill_alpha = 0
     p.xaxis.major_label_orientation = .5
 
+    return p
+
+def throughput_vs_device(data):
+    assert 'device' in data.columns
+    assert 'batch_size' in data.columns
+    assert 'throughput' in data.columns
+
+    data = data.sort_values(['device', 'batch_size'])
+    x = [(dev, str(bs)) for dev, bs in zip(data.device, data.batch_size)]
+    y = data.throughput
+    title='Throughput vs devices'
+    if 'model' in data:
+        title += ' @ ' + data.model.iloc[0]
+    source = ColumnDataSource(data=dict(x=x, y=y))
+    p = figure(x_range=FactorRange(*x), plot_height=250, toolbar_location=None,
+               title=title)
+    p.vbar(x='x', top='y', width=.8, source=source)
+
+    tooltips = [("Throughput", "@y")]
+    p.add_tools(HoverTool(tooltips=tooltips))
+    p.xgrid.grid_line_color = None
+    p.y_range.start = 0
+    p.background_fill_alpha = 0
+    p.border_fill_alpha = 0
+    p.yaxis.axis_label = '#examples/sec'
     return p

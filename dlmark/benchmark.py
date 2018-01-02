@@ -1,6 +1,8 @@
 from multiprocessing import Process, Queue
 import json
+import glob
 import inspect
+import pandas as pd
 
 def run_with_separate_process(func, *args):
     def _process(queue, func, *args):
@@ -36,3 +38,11 @@ class SaveResults(object):
         self.results.append(result)
         with open(self.fname, 'w') as f:
             json.dump(self.results, f, indent=2)
+
+def load_results(fname):
+    data = pd.DataFrame()
+    for fn in glob.glob(fname):
+        with open(fn, 'r') as f:
+            result = json.load(f)
+            data = data.append(result)
+    return data
