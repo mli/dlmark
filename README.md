@@ -1,5 +1,7 @@
 # An Open Deep Learning Benchmark
 
+Preview at http://dlmark.org.s3-website-us-west-2.amazonaws.com/
+
 ## How to use
 
 1. Open an Ubuntu 16.04 instance on EC2
