@@ -1,4 +1,6 @@
-# bnechmark
+# DLMark: an Open Benchmark for Deep Learning
+
+This project is still under developement. 
 
 
 ```eval_rst
